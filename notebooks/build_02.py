@@ -13,7 +13,9 @@ md(r"""
 
 **Author:** Mariam Fathi · **Data:** USA Real Estate Dataset (2,226,382 listings) · **Code:** `src/reaudit`, `experiments/run_validation.py`
 
-[Part 1](01_root_cause_analysis.ipynb) showed that the original detectors flagged valid records. Showing they are wrong
+**Series:** [Part 1: Root-cause analysis](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-1-root-cause-analysis) · **Part 2: Validating detectors** · [Part 3: Duplicate leakage](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-3-duplicate-leakage-in-ml) · [Code on GitHub](https://github.com/Mariam-Fathi/real-estate-audit)
+
+[Part 1](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-1-root-cause-analysis) showed that the original detectors flagged valid records. Showing they are wrong
 is not the same as showing a replacement is right. This part measures both on data where the answer is known:
 I plant errors into the real dataset, run every detector, and score its flags against the planted labels.
 
@@ -306,7 +308,7 @@ md(r"""
 - For price errors, comparing each listing with its zip code mattered more than the model: Isolation Forest's average
   precision rose from 0.08 to 0.59 with zip-relative price features, roughly matching a robust z-score (0.41) that is
   simpler to explain and has a usable threshold.
-- Next, Part 3 asks what these errors cost: how much do duplicate listings that land in both train and test inflate the
+- Next, [Part 3](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-3-duplicate-leakage-in-ml) asks what these errors cost: how much do duplicate listings that land in both train and test inflate the
   measured accuracy of a price model?
 """)
 

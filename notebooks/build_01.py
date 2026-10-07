@@ -11,6 +11,8 @@ md(r"""
 
 **Author:** Mariam Fathi · **Data:** [USA Real Estate Dataset](https://www.kaggle.com/datasets/ahmedshahriarsakib/usa-real-estate-dataset) (2,226,382 realtor.com listings)
 
+**Series:** **Part 1: Root-cause analysis** · [Part 2: Validating detectors](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-2-validating-detectors) · [Part 3: Duplicate leakage](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-3-duplicate-leakage-in-ml) · [Code on GitHub](https://github.com/Mariam-Fathi/real-estate-audit)
+
 ## Why this notebook exists
 
 An earlier version of this series reported that **38.19% of listings were "suspicious"**, raising the possibility of
@@ -30,7 +32,7 @@ re-runs the original detectors, then asks of each flag: *what mechanism produces
 **Corrected picture:** the dataset contains no evidence of fraud. It does contain a real data-quality issue that matters
 for modelling: **10.4% of records belong to a property that appears more than once**, almost always as a `for_sale` /
 `sold` pair. Those must be deduplicated before property-level analysis, or a model will see the same house in train
-and test (investigated in a later part).
+and test (measured in [Part 3](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-3-duplicate-leakage-in-ml)).
 """)
 
 md("## 1. Setup")
@@ -315,7 +317,7 @@ md(r"""
 3. *Explain a pattern before labelling it.* A rule that flags 5% of a market as "possible fraud" should be checked
    against the data-generating process (here: a scraper capturing listings at two lifecycle stages) and against a
    volume baseline.
-4. *Validate detectors on data with known answers.* Part 2 plants synthetic errors and measures precision and recall.
+4. *Validate detectors on data with known answers.* [Part 2](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-2-validating-detectors) plants synthetic errors and measures precision and recall.
 """)
 code(r"""
 lifecycle_rows = dup_all.groupby('gid')['status'].transform(lambda s: ' + '.join(sorted(s))) == 'for_sale + sold'

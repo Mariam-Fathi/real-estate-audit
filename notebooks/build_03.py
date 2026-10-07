@@ -13,7 +13,9 @@ md(r"""
 
 **Author:** Mariam Fathi · **Code:** `src/reaudit/leakage.py`, `experiments/run_leakage.py`, `experiments/run_naive_split.py`
 
-[Part 1](01_root_cause_analysis.ipynb) found that many properties appear more than once (a `for_sale` and a `sold`
+**Series:** [Part 1: Root-cause analysis](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-1-root-cause-analysis) · [Part 2: Validating detectors](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-2-validating-detectors) · **Part 3: Duplicate leakage** · [Code on GitHub](https://github.com/Mariam-Fathi/real-estate-audit)
+
+[Part 1](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-1-root-cause-analysis) found that many properties appear more than once (a `for_sale` and a `sold`
 record of the same house, or relistings). The standard worry: with a random train/test split, a model can see one
 record of a house in training and be tested on another record of the same house, so its test score overstates how
 well it values houses it has never seen. This notebook measures that effect instead of assuming it.
@@ -241,7 +243,7 @@ same **features**: the status differs, and so does the previous-sale year (the `
 the `sold` record the 2021–22 one). The model therefore can't look the answer up; it can only place the test row
 next to a training point with the right price, which narrows the error without removing it. The 17% of twins that are
 not the same home are other units or floor plans at the same encoded address, such as new-build developments with
-dozens of `ready_to_build` listings at one address (the ambiguity Part 2 found).
+dozens of `ready_to_build` listings at one address (the ambiguity [Part 2](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-2-validating-detectors) found).
 """)
 
 md(r"""

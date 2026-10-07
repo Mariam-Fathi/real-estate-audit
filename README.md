@@ -8,6 +8,8 @@ An audit of the [USA Real Estate Dataset](https://www.kaggle.com/datasets/ahmeds
 from, validates replacement detectors against planted errors, and measures what the real duplicates cost a price model.
 It ships as a tested Python package with a data contract and a command-line audit.
 
+**On Kaggle:** [Part 1: Root-cause analysis](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-1-root-cause-analysis) · [Part 2: Validating detectors](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-2-validating-detectors) · [Part 3: Duplicate leakage in ML](https://www.kaggle.com/code/mariamfathiamin/real-estate-audit-3-duplicate-leakage-in-ml)
+
 ## Key results
 
 - **The 38% headline was an artefact.** Every "placeholder date" was an ordinary missing value (`astype(str)` turns
