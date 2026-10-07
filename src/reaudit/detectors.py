@@ -50,8 +50,16 @@ def duplicates(df):
     return pd.Series(df.index.isin(flagged), index=df.index)
 
 
-def _robust_z(v, groups, fallback, min_n=20):
-    """Modified z-score of v against its group's median/MAD; falls back to a coarser group when small."""
+MAD_FLOOR_QUANTILE = 0.05
+
+
+def _robust_z(v, groups, fallback, min_n=20, mad_floor_quantile=None):
+    """Modified z-score of v against its group's median/MAD; falls back to a coarser group when small.
+
+    mad_floor_quantile: if set, a group's MAD is raised to at least this quantile of the MADs of all groups
+    with >= min_n values. Without it, a group where most values are identical has MAD ~ 0 and every other
+    value gets an enormous z. The floor is computed from the data itself, never from labels.
+    """
     def stats(by):
         med = v.groupby(by).transform('median')
         mad = (v - med).abs().groupby(by).transform('median')
@@ -61,19 +69,26 @@ def _robust_z(v, groups, fallback, min_n=20):
     fmed, fmad, _ = stats(fallback)
     use_fallback = (n < min_n) | (mad == 0) | mad.isna()
     med, mad = med.where(~use_fallback, fmed), mad.where(~use_fallback, fmad)
+    if mad_floor_quantile is not None:
+        group_mad = (v - v.groupby(groups).transform('median')).abs().groupby(groups).median()
+        group_n = v.groupby(groups).count()
+        mad = mad.clip(lower=group_mad[group_n >= min_n].quantile(mad_floor_quantile))
     return 0.6745 * (v - med) / mad
 
 
-def price_robust_z(df):
-    """|modified z| of log price-per-sqft within zip code (state fallback); log price when size is missing."""
+def price_robust_z(df, mad_floor_quantile=MAD_FLOOR_QUANTILE):
+    """|modified z| of log price-per-sqft within zip code (state fallback); log price when size is missing.
+
+    mad_floor_quantile=None reproduces the Part 2 detector, which had no MAD floor.
+    """
     price = df['price'].where(df['price'] > 0)
     size = df['house_size'].where(df['house_size'] > 0)
     lp = np.log(price)
     lppsf = lp - np.log(size)
     zip_ = df['zip_code'].fillna(-1)
     state = df['state'].fillna('?')
-    z = _robust_z(lppsf, zip_, state).abs()
-    z = z.fillna(_robust_z(lp, zip_, state).abs())
+    z = _robust_z(lppsf, zip_, state, mad_floor_quantile=mad_floor_quantile).abs()
+    z = z.fillna(_robust_z(lp, zip_, state, mad_floor_quantile=mad_floor_quantile).abs())
     return z.where(df['price'].isna() | (df['price'] > 0), np.inf).fillna(0)
 
 

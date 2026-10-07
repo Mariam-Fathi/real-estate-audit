@@ -7,13 +7,12 @@ Writes results/leakage_naive.csv.
 import sys
 import time
 
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupShuffleSplit
 
 sys.path.insert(0, 'src')
-from reaudit import leakage                    # noqa: E402
-from reaudit.data import load_raw              # noqa: E402
+from reaudit import leakage  # noqa: E402
+from reaudit.data import load_raw  # noqa: E402
 
 
 def main(n_seeds=5, only=None):

@@ -4,3 +4,5 @@ __pycache__/
 *.parquet
 .venv/
 scratch/
+reports/
+*.egg-info/

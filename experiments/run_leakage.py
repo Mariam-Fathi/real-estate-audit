@@ -12,8 +12,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, 'src')
-from reaudit import leakage                    # noqa: E402
-from reaudit.data import load_raw              # noqa: E402
+from reaudit import leakage  # noqa: E402
+from reaudit.data import load_raw  # noqa: E402
 
 DOSE_MODEL = 'random forest'
 KEEP_SHARES = [0.0, 0.25, 0.5, 0.75, 1.0]
@@ -61,6 +61,7 @@ def main(n_seeds=5, only=None):
                                  new_records])
     new_rows.to_csv('results/leakage_metrics.csv', index=False)
     new_records.to_parquet('results/leakage_records.parquet', index=False)
+    leakage.mechanism_table(new_records).to_csv('results/leakage_mechanism.csv', index=False)
 
 
 if __name__ == '__main__':

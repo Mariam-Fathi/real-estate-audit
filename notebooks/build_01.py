@@ -21,7 +21,7 @@ re-runs the original detectors, then asks of each flag: *what mechanism produces
 
 | # | Original claim | What the data shows |
 |---|---|---|
-| 1 | 734,297 "placeholder dates" (33.0%) | Every one is an ordinary missing value. `astype(str)` turns `NaN` into the string `'nan'`, which was on the placeholder list. Missingness is **structural**: 0% for `sold`, 100% for `ready_to_build` (new builds were never sold). |
+| 1 | 734,297 "placeholder dates" (33.0%) | Every one is an ordinary missing value. `astype(str)` (pandas 2) turns `NaN` into the string `'nan'`, which was on the placeholder list. Missingness is **structural**: 0% for `sold`, 100% for `ready_to_build` (new builds were never sold). |
 | 2 | 57,930 "same price, different dates" patterns (115,872 records) | 99.9% are one `for_sale` record + one `sold` record of the **same property** — the listing captured twice in its lifecycle. The "date span" is the gap between the prior sale and the 2021–22 sale (median 8.6 years), i.e. a normal holding period. |
 | 3 | 66,960 "price manipulation" cases | The same `for_sale` + `sold` pairs (99.8%), found again with a different key. |
 | 4 | A few brokers drive most suspicious patterns | The top 3 "suspicious" brokers are the 3 largest brokers by volume, flagged at the same rate (~8.5% of their sales). Flag counts track volume (Spearman ρ = 0.71). |
@@ -79,7 +79,8 @@ PLACEHOLDERS = ['####', '0000-00-00', '1900-01-01', 'nan', 'null', 'none',
 
 
 def original_placeholder_dates(raw):
-    s = raw['prev_sold_date'].astype(str).str.lower()          # NaN -> 'nan'
+    # the original used astype(str), which in pandas 2 turns NaN into 'nan'; spelled out so pandas 3 agrees
+    s = raw['prev_sold_date'].astype('string').fillna('nan').str.lower()
     return s.isin(PLACEHOLDERS) | s.str.contains('####', regex=False)
 
 
@@ -307,7 +308,8 @@ md(r"""
 
 **Lessons for the rest of the series**
 
-1. *Check what a sentinel list matches.* `astype(str)` on a column with missing values creates the string `'nan'`.
+1. *Check what a sentinel list matches.* In pandas 2, `astype(str)` on a column with missing values creates the
+   string `'nan'`. (pandas 3 changed this behaviour, which is a reason to never rely on it.)
 2. *Missing keys and `groupby`:* pass `dropna=False` or handle missing keys explicitly; otherwise records vanish silently.
 3. *Explain a pattern before labelling it.* A rule that flags 5% of a market as "possible fraud" should be checked
    against the data-generating process (here: a scraper capturing listings at two lifecycle stages) and against a

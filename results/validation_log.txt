@@ -5,14 +5,15 @@
                   original: price manipulation    duplicate                    133954
                  corrected: listing duplicates    duplicate                      4815
                corrected: robust z (|z| > 3.5)   price_unit                     88410
+            corrected v2: robust z + MAD floor   price_unit                     87009
                  ML baseline: isolation forest   price_unit                    329667
 ML baseline: isolation forest (price features)   price_unit                    371971 
-[31s]
-seed 0 done [48s]
-seed 1 done [69s]
-seed 2 done [61s]
-seed 3 done [60s]
-seed 4 done [60s]
+[39s]
+seed 0 done [128s]
+seed 1 done [128s]
+seed 2 done [129s]
+seed 3 done [129s]
+seed 4 done [109s]
                                                              precision  precision_upper  recall     f1
 family       detector                                                                                 
 duplicate    corrected: listing duplicates                       0.715            0.999   1.000  0.834
@@ -22,4 +23,5 @@ invalid_date corrected: invalid dates                            1.000          
              original: placeholder dates                         0.003            0.501   0.333  0.005
 price_unit   ML baseline: isolation forest                       0.012            0.164   0.965  0.023
              ML baseline: isolation forest (price features)      0.012            0.204   0.988  0.023
+             corrected v2: robust z + MAD floor                  0.041            0.844   0.924  0.078
              corrected: robust z (|z| > 3.5)                     0.040            0.839   0.924  0.077

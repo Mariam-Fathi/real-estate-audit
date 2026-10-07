@@ -2,7 +2,6 @@
 
 Each returns a boolean Series over df.index: True = record flagged.
 """
-import numpy as np
 import pandas as pd
 
 PROPERTY_KEY = ['brokered_by', 'price', 'bed', 'bath', 'acre_lot',
@@ -16,9 +15,9 @@ def _dates(df):
 
 
 def placeholder_dates(df):
-    # the original read the column as object dtype, where astype(str) turns NaN into 'nan'
-    s = pd.Series(df['prev_sold_date'].to_numpy(dtype=object, na_value=np.nan), index=df.index)
-    s = s.astype(str).str.lower()
+    # The original ran astype(str) on an object column, which under pandas 2 turns NaN into the string 'nan'.
+    # pandas 3 keeps NaN missing instead, so the conversion is spelled out to reproduce the bug on any version.
+    s = df['prev_sold_date'].astype('string').fillna('nan').str.lower()
     return s.isin(PLACEHOLDERS) | s.str.contains('####', regex=False)
 
 

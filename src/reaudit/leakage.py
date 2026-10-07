@@ -14,19 +14,10 @@ from sklearn.metrics import r2_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-PROPERTY_KEY = ['street', 'zip_code', 'city', 'state']
+from .data import PROPERTY_KEY, property_ids  # noqa: F401  (re-exported for notebooks and tests)
+
 FEATURES = ['bed', 'bath', 'acre_lot', 'house_size', 'zip_code', 'state_code', 'status_code', 'sold_year']
 PRICE_RANGE = (10_000, 50_000_000)
-
-
-def property_ids(df):
-    """One id per physical property (encoded street + zip + city + state); records missing any of these get
-    their own id, since they cannot be matched to anything."""
-    missing = df[PROPERTY_KEY].isna().any(axis=1).to_numpy()
-    pid = np.empty(len(df), dtype=np.int64)
-    pid[~missing] = df[~missing].groupby(PROPERTY_KEY).ngroup().to_numpy()
-    pid[missing] = (pid[~missing].max() + 1 if (~missing).any() else 0) + np.arange(missing.sum())
-    return pd.Series(pid, index=df.index, name='pid')
 
 
 def prepare(raw):
@@ -88,3 +79,17 @@ def metrics(y, p):
     abs_log = np.abs(p - y)
     return {'r2': r2_score(y, p), 'mae_log': abs_log.mean(),
             'median_ape': np.median(np.abs(np.exp(p - y) - 1))}
+
+
+def mechanism_table(records):
+    """Per model and test subset: mean |log error| without (keep_share 0) and with (1) twins, and the change.
+
+    records: per-record errors with columns model, keep_share, row, seen, abs_err (seed 0 of run_leakage).
+    """
+    w = records.pivot_table(index=['model', 'row', 'seen'], columns='keep_share', values='abs_err').reset_index()
+    w['change'] = w[1.0] - w[0.0]
+    t = (w.groupby(['model', 'seen'])
+          .agg(n=('change', 'size'), err_without=(0.0, 'mean'), err_with=(1.0, 'mean'), change=('change', 'mean'))
+          .reset_index())
+    t['seen'] = t['seen'].map({True: 'twin in training', False: 'no twin'})
+    return t

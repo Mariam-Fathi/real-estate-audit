@@ -10,10 +10,10 @@ import time
 import pandas as pd
 
 sys.path.insert(0, 'src')
-from reaudit import detectors, legacy                     # noqa: E402
-from reaudit.corrupt import corrupt                       # noqa: E402
-from reaudit.data import load_raw                         # noqa: E402
-from reaudit.evaluate import flag_metrics, recall_by_subtype, score_metrics   # noqa: E402
+from reaudit import detectors, legacy  # noqa: E402
+from reaudit.corrupt import corrupt  # noqa: E402
+from reaudit.data import load_raw  # noqa: E402
+from reaudit.evaluate import flag_metrics, recall_by_subtype, score_metrics  # noqa: E402
 
 IF_THRESHOLD = 0.5   # sklearn's default rule: anomaly when -score_samples > 0.5 (offset_ for contamination='auto')
 
@@ -27,13 +27,16 @@ def run_flag_detectors(df, seed):
         'original: price manipulation': ('duplicate', legacy.price_manipulation(df)),
         'corrected: listing duplicates': ('duplicate', detectors.duplicates(df)),
     }
-    z = detectors.price_robust_z(df)
+    z = detectors.price_robust_z(df, mad_floor_quantile=None)      # the Part 2 detector
+    z2 = detectors.price_robust_z(df)                               # with the MAD floor (added in Part 4)
     iso = detectors.price_isolation_forest(df, seed=seed)
     iso_p = detectors.price_isolation_forest(df, seed=seed, price_only=True)
     out['corrected: robust z (|z| > 3.5)'] = ('price_unit', z > detectors.MODIFIED_Z_THRESHOLD)
+    out['corrected v2: robust z + MAD floor'] = ('price_unit', z2 > detectors.MODIFIED_Z_THRESHOLD)
     out['ML baseline: isolation forest'] = ('price_unit', iso > IF_THRESHOLD)
     out['ML baseline: isolation forest (price features)'] = ('price_unit', iso_p > IF_THRESHOLD)
-    scores = {'corrected: robust z (|z| > 3.5)': z, 'ML baseline: isolation forest': iso,
+    scores = {'corrected: robust z (|z| > 3.5)': z, 'corrected v2: robust z + MAD floor': z2,
+              'ML baseline: isolation forest': iso,
               'ML baseline: isolation forest (price features)': iso_p}
     return out, scores
 
@@ -65,7 +68,8 @@ def main(n_seeds=5):
 
     pd.DataFrame(rows).to_csv('results/validation_metrics.csv', index=False)
     pd.DataFrame(subtype_rows).to_csv('results/validation_recall_by_subtype.csv', index=False)
-    summary = pd.DataFrame(rows).groupby(['family', 'detector'])[['precision', 'precision_upper', 'recall', 'f1']].mean()
+    metrics = ['precision', 'precision_upper', 'recall', 'f1']
+    summary = pd.DataFrame(rows).groupby(['family', 'detector'])[metrics].mean()
     print(summary.round(3).to_string())
 
 

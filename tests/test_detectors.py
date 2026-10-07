@@ -20,7 +20,7 @@ HOUSE = [1.0, 'for_sale', 300000.0, 3.0, 2.0, 0.2, 10.0, 'Austin', 'Texas', 7870
 
 def with_(**kw):
     row = dict(zip(['brokered_by', 'status', 'price', 'bed', 'bath', 'acre_lot', 'street',
-                    'city', 'state', 'zip_code', 'house_size', 'prev_sold_date'], HOUSE))
+                    'city', 'state', 'zip_code', 'house_size', 'prev_sold_date'], HOUSE, strict=True))
     row.update(kw)
     return list(row.values())
 
@@ -85,6 +85,21 @@ def test_robust_z_flags_unit_error():
     z = detectors.price_robust_z(frame(rows))
     assert z.iloc[-1] > detectors.MODIFIED_Z_THRESHOLD
     assert (z.iloc[:-1] < detectors.MODIFIED_Z_THRESHOLD).all()
+
+
+def test_mad_floor_tames_zip_codes_with_repeated_prices():
+    # 60% of a zip code's listings share one price, so its MAD is 0 before the fallback and tiny after it
+    rows = [with_(price=150000.0, street=float(i)) for i in range(30)]
+    rows += [with_(price=150000.0 * (1 + 0.002 * i), street=float(100 + i)) for i in range(15)]
+    rows += [with_(price=180000.0, street=999.0)]                                  # an ordinary 20% higher price
+    rng = np.random.default_rng(0)                                                 # 20 ordinary zip codes
+    rows += [with_(price=float(p), street=float(200 + i), zip_code=float(78000 + i % 20), state='Ohio')
+             for i, p in enumerate(rng.lognormal(np.log(250000), 0.3, 600))]
+    df = frame(rows)
+    no_floor = detectors.price_robust_z(df, mad_floor_quantile=None)
+    floored = detectors.price_robust_z(df)
+    assert no_floor.iloc[45] > 50
+    assert floored.iloc[45] < detectors.MODIFIED_Z_THRESHOLD
 
 
 def test_zero_price_scores_infinite():

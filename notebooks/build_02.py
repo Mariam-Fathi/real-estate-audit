@@ -36,13 +36,22 @@ I plant errors into the real dataset, run every detector, and score its flags ag
 
 md("## 1. Setup")
 code(r"""
+# Runs from notebooks/ in the repo, or on Kaggle: there it clones the repo (turn Internet on in the settings)
+import os
+import subprocess
 import sys
+
+REPO = 'https://github.com/Mariam-Fathi/real-estate-audit'
+if os.path.exists('/kaggle/input') and not os.path.exists('../src/reaudit'):
+    subprocess.run(['git', 'clone', '--depth', '1', REPO, '/kaggle/working/real-estate-audit'], check=True)
+    os.chdir('/kaggle/working/real-estate-audit/notebooks')
+sys.path.insert(0, os.path.abspath('../src'))
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
 
-sys.path.insert(0, '../src')
 from reaudit import detectors
 from reaudit.data import load_raw
 
@@ -200,10 +209,10 @@ Flags on the *unmodified* dataset are not scored (there is no ground truth), but
 detectors. Each group below is a candidate for review.
 """)
 code(r"""
-raw = load_raw('../data/raw/realtor-data.zip.csv')
+raw = load_raw()
 bad_dates = raw[detectors.invalid_dates(raw)]
 dup = raw[detectors.duplicates(raw)]
-z = detectors.price_robust_z(raw)
+z = detectors.price_robust_z(raw, mad_floor_quantile=None)   # the detector as evaluated in §2
 print(f'invalid dates      : {len(bad_dates)} records -> {bad_dates.prev_sold_date.tolist()}')
 print(f'listing duplicates : {len(dup):,} records in {dup.groupby(detectors.LISTING_KEY).ngroups:,} groups')
 print(f'price |z| > 3.5    : {(z > 3.5).sum():,} records ({(z > 3.5).mean():.1%}); price = 0: {(raw.price == 0).sum()}')
@@ -238,6 +247,39 @@ md(r"""
 """)
 
 md(r"""
+### Follow-up: a floor on the MAD (added after the results above)
+
+The fix keeps every zip code's MAD at or above the **5th percentile of zip-level MADs** (about 0.10 on the log scale,
+i.e. prices per sq ft within a zip code are assumed to vary by at least ~10%). The floor is computed from the data
+itself, not from the planted labels, and the 3.5 threshold is unchanged. Both versions were scored in the same
+5-seed experiment.
+""")
+code(r"""
+versions = {'without floor (§2)': 'corrected: robust z (|z| > 3.5)', 'with MAD floor': 'corrected v2: robust z + MAD floor'}
+fix = pd.DataFrame({name: {'flags per seed': m[m.detector == d].flagged.mean(),
+                           'recall': m[m.detector == d].recall.mean(),
+                           'precision (upper)': m[m.detector == d].precision_upper.mean(),
+                           'average precision': m[m.detector == d].average_precision.mean(),
+                           'R-precision': m[m.detector == d].r_precision.mean()}
+                    for name, d in versions.items()})
+assert fix.loc['recall'].nunique() == 1 or abs(fix.loc['recall'].diff().iloc[-1]) < 0.002
+assert fix.loc['average precision', 'with MAD floor'] > fix.loc['average precision', 'without floor (§2)']
+
+z2 = detectors.price_robust_z(raw)
+top = raw.assign(z=z2).query('price > 0').sort_values('z', ascending=False)
+worst_without, worst_with = z.loc[raw.price > 0].max(), top.z.iloc[0]
+assert worst_without > 10 * worst_with
+print(f'largest z on a positive price: {worst_without:,.0f} without the floor, {worst_with:,.0f} with it')
+fix.round(3)
+""")
+md(r"""
+The floor removes the absurd scores (the largest z on a positive price falls from about 1,900 to 80), flags about 1,400 fewer
+records per seed, keeps recall the same, and improves the ranking: average precision 0.41 → 0.45, R-precision
+0.55 → 0.58, now level with the price-feature Isolation Forest on R-precision. It is the default in the `reaudit`
+package and its `audit` command.
+""")
+
+md(r"""
 ## 5. Limitations
 
 1. **The same person designed the errors and the detectors.** The date family especially is solved almost by
@@ -252,7 +294,8 @@ md(r"""
    (AP, R-precision) are the better comparison.
 4. **Thresholds are not tuned.** Both thresholds (z > 3.5, Isolation Forest's default) were fixed in advance. Tuning on
    these labels would inflate results unless done on held-out seeds.
-5. **The z-score is unstable when a zip code's prices barely vary** (§4); a MAD floor is needed.
+5. **The z-score was unstable when a zip code's prices barely vary** (§4). A MAD floor, added after the experiment
+   and chosen without the labels, fixes it.
 6. **One snapshot of one dataset.**
 
 ## 6. Takeaways

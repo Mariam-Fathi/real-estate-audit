@@ -48,7 +48,7 @@ def corrupt(df, seed, spec=None):
     idx = _take(rng, dated, spec.sentinel_dates, used)
     vals = rng.choice(SENTINELS, size=len(idx))
     out.loc[idx, 'prev_sold_date'] = vals
-    labels.extend((i, 'invalid_date', f'sentinel {v}') for i, v in zip(idx, vals))
+    labels.extend((i, 'invalid_date', f'sentinel {v}') for i, v in zip(idx, vals, strict=True))
 
     n_plus = spec.typo_years // 2
     idx = _take(rng, dated, n_plus, used)

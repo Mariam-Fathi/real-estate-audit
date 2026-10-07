@@ -56,19 +56,28 @@ fixed instead:
 
 md("## 1. Setup")
 code(r"""
+# Runs from notebooks/ in the repo, or on Kaggle: there it clones the repo (turn Internet on in the settings)
+import os
+import subprocess
 import sys
+
+REPO = 'https://github.com/Mariam-Fathi/real-estate-audit'
+if os.path.exists('/kaggle/input') and not os.path.exists('../src/reaudit'):
+    subprocess.run(['git', 'clone', '--depth', '1', REPO, '/kaggle/working/real-estate-audit'], check=True)
+    os.chdir('/kaggle/working/real-estate-audit/notebooks')
+sys.path.insert(0, os.path.abspath('../src'))
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
 
-sys.path.insert(0, '../src')
 from reaudit import leakage
 from reaudit.data import load_raw
 
 m = pd.read_csv('../results/leakage_metrics.csv')
 naive = pd.read_csv('../results/leakage_naive.csv')
-rec = pd.read_parquet('../results/leakage_records.parquet')
+mech = pd.read_csv('../results/leakage_mechanism.csv')
 SEEDS = m.seed.nunique()
 MODELS = ['ridge', 'gradient boosting', 'random forest']
 
@@ -86,7 +95,7 @@ def ci(x):
     return x.mean(), stats.t.ppf(0.975, len(x) - 1) * x.std(ddof=1) / np.sqrt(len(x))
 """)
 code(r"""
-df = leakage.prepare(load_raw('../data/raw/realtor-data.zip.csv'))
+df = leakage.prepare(load_raw())
 size = df.groupby('pid')['pid'].transform('size')
 tr, te, twin = leakage.split_with_twins(df, seed=0)
 seen = np.isin(df.pid.to_numpy()[te], df.pid.to_numpy()[tr])
@@ -162,12 +171,7 @@ twin in training, and not on the other 88%. Seed 0 gives a per-record paired com
 by a model trained with and without the twins.
 """)
 code(r"""
-w = rec.pivot_table(index=['model', 'row', 'seen'], columns='keep_share', values='abs_err').reset_index()
-w['change'] = w[1.0] - w[0.0]
-mech = (w.groupby(['model', 'seen'])
-         .agg(n=('change', 'size'), err_without=(0.0, 'mean'), err_with=(1.0, 'mean'), change=('change', 'mean'))
-         .reset_index())
-mech['seen'] = mech['seen'].map({True: 'twin in training', False: 'no twin'})
+# per-record errors of seed 0 summarised by leakage.mechanism_table (results/leakage_mechanism.csv)
 assert (mech[(mech.model == 'random forest') & (mech.seen == 'twin in training')].change < -0.02).all()
 mech.round(4)
 """)

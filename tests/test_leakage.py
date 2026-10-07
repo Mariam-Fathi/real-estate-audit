@@ -26,7 +26,7 @@ def test_twins_are_exactly_train_rows_whose_property_is_in_test(df):
     tr, te, twin = leakage.split_with_twins(df, seed=1)
     assert len(np.intersect1d(tr, te)) == 0 and len(tr) + len(te) == len(df)
     test_pids = set(df.pid.iloc[te])
-    assert all((p in test_pids) == t for p, t in zip(df.pid.iloc[tr], twin))
+    assert all((p in test_pids) == t for p, t in zip(df.pid.iloc[tr], twin, strict=True))
 
 
 @pytest.mark.parametrize('share', [0.0, 0.25, 0.5, 1.0])

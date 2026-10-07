@@ -1,9 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "reaudit"
-version = "0.1.0"
-description = "Data-quality detectors and validation for the USA Real Estate dataset"
+version = "0.2.0"
+description = "Data-quality audit, detector validation and leakage analysis for the USA Real Estate dataset"
+readme = "README.md"
 requires-python = ">=3.10"
+authors = [{ name = "Mariam Fathi" }]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "scipy>=1.11",
+    "scikit-learn>=1.4",
+    "pandera>=0.20",
+    "pyarrow>=15",
+]
+
+[project.optional-dependencies]
+notebooks = ["matplotlib>=3.8", "kagglehub>=0.3", "nbformat>=5.9", "nbconvert>=7.0", "ipykernel>=6.0"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+reaudit = "reaudit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["notebooks/*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+    "E731",   # lambda assignment: used deliberately in the notebook builders
+    "B023",   # closures in loops are evaluated immediately in this codebase
+]
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/build_*.py" = ["E501"]   # long markdown lines inside notebook builders
+"experiments/*.py" = ["E402"]       # sys.path set before importing the package
