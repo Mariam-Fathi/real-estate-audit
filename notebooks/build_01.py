@@ -35,15 +35,16 @@ and test (investigated in a later part).
 
 md("## 1. Setup")
 code(r"""
+import glob
 import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 
-CANDIDATES = ['/kaggle/input/usa-real-estate-dataset/realtor-data.zip.csv',
-              '../data/raw/realtor-data.zip.csv', 'data/raw/realtor-data.zip.csv']
-PATH = next(p for p in CANDIDATES if os.path.exists(p))
+# local copy first; on Kaggle, search the input folder (its mount layout varies between notebook versions)
+LOCAL = [p for p in ['../data/raw/realtor-data.zip.csv', 'data/raw/realtor-data.zip.csv'] if os.path.exists(p)]
+PATH = (LOCAL + sorted(glob.glob('/kaggle/input/**/realtor-data.zip.csv', recursive=True)))[0]
 
 raw = pd.read_csv(PATH)
 df = raw.copy()

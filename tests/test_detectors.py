@@ -136,3 +136,13 @@ def test_flag_metrics():
     m = flag_metrics(flags, labels, 'x')
     assert (m['tp'], m['fp'], m['fn']) == (1, 1, 1)
     assert m['precision'] == m['recall'] == 0.5
+
+
+def test_find_dataset_searches_nested_mounts(tmp_path):
+    from reaudit.data import FILENAME, find_dataset
+    nested = tmp_path / 'datasets' / 'owner' / 'usa-real-estate-dataset' / 'versions' / '25'
+    nested.mkdir(parents=True)
+    (nested / FILENAME).write_text('x')
+    assert find_dataset(candidates=[], search_roots=[str(tmp_path)]) == str(nested / FILENAME)
+    with pytest.raises(FileNotFoundError):
+        find_dataset(candidates=[], search_roots=[str(tmp_path / 'empty')])

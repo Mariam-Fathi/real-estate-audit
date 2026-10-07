@@ -1,3 +1,4 @@
+import glob
 import os
 
 import numpy as np
@@ -5,17 +6,27 @@ import pandas as pd
 
 PROPERTY_KEY = ['street', 'zip_code', 'city', 'state']   # the encoded street has no unit number
 
-CANDIDATE_PATHS = [
-    '/kaggle/input/usa-real-estate-dataset/realtor-data.zip.csv',
-    'data/raw/realtor-data.zip.csv',
-    '../data/raw/realtor-data.zip.csv',
-]
+FILENAME = 'realtor-data.zip.csv'
+CANDIDATE_PATHS = [f'data/raw/{FILENAME}', f'../data/raw/{FILENAME}']
+SEARCH_ROOTS = ['/kaggle/input']    # Kaggle's mount layout differs between notebook versions, so search it
+
+
+def find_dataset(candidates=CANDIDATE_PATHS, search_roots=SEARCH_ROOTS):
+    """Path of the listings CSV: a known local path first, otherwise the first match under a search root."""
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    for root in search_roots:
+        hits = sorted(glob.glob(os.path.join(root, '**', FILENAME), recursive=True))
+        if hits:
+            return hits[0]
+    raise FileNotFoundError(f'{FILENAME} not found in {candidates} or under {search_roots}. Attach the USA Real '
+                            'Estate Dataset (ahmedshahriarsakib) as an input, or download it to data/raw/.')
 
 
 def load_raw(path=None):
     """Load the dataset with prev_sold_date kept as text, so invalid values stay visible."""
-    path = path or next(p for p in CANDIDATE_PATHS if os.path.exists(p))
-    return pd.read_csv(path, dtype={'prev_sold_date': 'string'})
+    return pd.read_csv(path or find_dataset(), dtype={'prev_sold_date': 'string'})
 
 
 def property_ids(df):
