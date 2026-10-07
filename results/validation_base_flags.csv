@@ -1,0 +1,9 @@
+detector,family,flags_on_unmodified_data
+original: placeholder dates,invalid_date,734297
+corrected: invalid dates,invalid_date,2
+"original: same price, different dates",duplicate,115872
+original: price manipulation,duplicate,133954
+corrected: listing duplicates,duplicate,4815
+corrected: robust z (|z| > 3.5),price_unit,88410
+ML baseline: isolation forest,price_unit,329667
+ML baseline: isolation forest (price features),price_unit,371971

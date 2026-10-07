@@ -1,0 +1,186 @@
+seed,detector,family,subtype,recall
+0,original: placeholder dates,invalid_date,sentinel 0000-00-00,1.0
+0,original: placeholder dates,invalid_date,sentinel 1900-01-01,1.0
+0,original: placeholder dates,invalid_date,sentinel 1970-01-01,0.0
+0,original: placeholder dates,invalid_date,sentinel 9999-12-31,0.0
+0,original: placeholder dates,invalid_date,sentinel N/A,1.0
+0,original: placeholder dates,invalid_date,sentinel unknown,1.0
+0,original: placeholder dates,invalid_date,transposed year,0.0
+0,original: placeholder dates,invalid_date,year +1000,0.0
+0,corrected: invalid dates,invalid_date,sentinel 0000-00-00,1.0
+0,corrected: invalid dates,invalid_date,sentinel 1900-01-01,1.0
+0,corrected: invalid dates,invalid_date,sentinel 1970-01-01,1.0
+0,corrected: invalid dates,invalid_date,sentinel 9999-12-31,1.0
+0,corrected: invalid dates,invalid_date,sentinel N/A,1.0
+0,corrected: invalid dates,invalid_date,sentinel unknown,1.0
+0,corrected: invalid dates,invalid_date,transposed year,1.0
+0,corrected: invalid dates,invalid_date,year +1000,1.0
+0,"original: same price, different dates",duplicate,exact copy,0.052
+0,"original: same price, different dates",duplicate,one attribute blanked,0.02525
+0,"original: same price, different dates",duplicate,price re-keyed (<=0.5%),0.02375
+0,original: price manipulation,duplicate,exact copy,0.0585
+0,original: price manipulation,duplicate,one attribute blanked,0.05075
+0,original: price manipulation,duplicate,price re-keyed (<=0.5%),0.0
+0,corrected: listing duplicates,duplicate,exact copy,1.0
+0,corrected: listing duplicates,duplicate,one attribute blanked,1.0
+0,corrected: listing duplicates,duplicate,price re-keyed (<=0.5%),1.0
+0,corrected: robust z (|z| > 3.5),price_unit,x0.001,0.993
+0,corrected: robust z (|z| > 3.5),price_unit,x10,0.785
+0,corrected: robust z (|z| > 3.5),price_unit,x100,0.929
+0,corrected: robust z (|z| > 3.5),price_unit,x1000,0.986
+0,ML baseline: isolation forest,price_unit,x0.001,1.0
+0,ML baseline: isolation forest,price_unit,x10,0.86
+0,ML baseline: isolation forest,price_unit,x100,0.996
+0,ML baseline: isolation forest,price_unit,x1000,1.0
+0,ML baseline: isolation forest (price features),price_unit,x0.001,1.0
+0,ML baseline: isolation forest (price features),price_unit,x10,0.962
+0,ML baseline: isolation forest (price features),price_unit,x100,0.999
+0,ML baseline: isolation forest (price features),price_unit,x1000,1.0
+1,original: placeholder dates,invalid_date,sentinel 0000-00-00,1.0
+1,original: placeholder dates,invalid_date,sentinel 1900-01-01,1.0
+1,original: placeholder dates,invalid_date,sentinel 1970-01-01,0.0
+1,original: placeholder dates,invalid_date,sentinel 9999-12-31,0.0
+1,original: placeholder dates,invalid_date,sentinel N/A,1.0
+1,original: placeholder dates,invalid_date,sentinel unknown,1.0
+1,original: placeholder dates,invalid_date,transposed year,0.0
+1,original: placeholder dates,invalid_date,year +1000,0.0
+1,corrected: invalid dates,invalid_date,sentinel 0000-00-00,1.0
+1,corrected: invalid dates,invalid_date,sentinel 1900-01-01,1.0
+1,corrected: invalid dates,invalid_date,sentinel 1970-01-01,1.0
+1,corrected: invalid dates,invalid_date,sentinel 9999-12-31,1.0
+1,corrected: invalid dates,invalid_date,sentinel N/A,1.0
+1,corrected: invalid dates,invalid_date,sentinel unknown,1.0
+1,corrected: invalid dates,invalid_date,transposed year,1.0
+1,corrected: invalid dates,invalid_date,year +1000,1.0
+1,"original: same price, different dates",duplicate,exact copy,0.0505
+1,"original: same price, different dates",duplicate,one attribute blanked,0.02725
+1,"original: same price, different dates",duplicate,price re-keyed (<=0.5%),0.028
+1,original: price manipulation,duplicate,exact copy,0.064
+1,original: price manipulation,duplicate,one attribute blanked,0.05275
+1,original: price manipulation,duplicate,price re-keyed (<=0.5%),0.0
+1,corrected: listing duplicates,duplicate,exact copy,1.0
+1,corrected: listing duplicates,duplicate,one attribute blanked,1.0
+1,corrected: listing duplicates,duplicate,price re-keyed (<=0.5%),1.0
+1,corrected: robust z (|z| > 3.5),price_unit,x0.001,0.993
+1,corrected: robust z (|z| > 3.5),price_unit,x10,0.775
+1,corrected: robust z (|z| > 3.5),price_unit,x100,0.924
+1,corrected: robust z (|z| > 3.5),price_unit,x1000,0.986
+1,ML baseline: isolation forest,price_unit,x0.001,1.0
+1,ML baseline: isolation forest,price_unit,x10,0.841
+1,ML baseline: isolation forest,price_unit,x100,0.998
+1,ML baseline: isolation forest,price_unit,x1000,1.0
+1,ML baseline: isolation forest (price features),price_unit,x0.001,1.0
+1,ML baseline: isolation forest (price features),price_unit,x10,0.953
+1,ML baseline: isolation forest (price features),price_unit,x100,1.0
+1,ML baseline: isolation forest (price features),price_unit,x1000,1.0
+2,original: placeholder dates,invalid_date,sentinel 0000-00-00,1.0
+2,original: placeholder dates,invalid_date,sentinel 1900-01-01,1.0
+2,original: placeholder dates,invalid_date,sentinel 1970-01-01,0.0
+2,original: placeholder dates,invalid_date,sentinel 9999-12-31,0.0
+2,original: placeholder dates,invalid_date,sentinel N/A,1.0
+2,original: placeholder dates,invalid_date,sentinel unknown,1.0
+2,original: placeholder dates,invalid_date,transposed year,0.0
+2,original: placeholder dates,invalid_date,year +1000,0.0
+2,corrected: invalid dates,invalid_date,sentinel 0000-00-00,1.0
+2,corrected: invalid dates,invalid_date,sentinel 1900-01-01,1.0
+2,corrected: invalid dates,invalid_date,sentinel 1970-01-01,1.0
+2,corrected: invalid dates,invalid_date,sentinel 9999-12-31,1.0
+2,corrected: invalid dates,invalid_date,sentinel N/A,1.0
+2,corrected: invalid dates,invalid_date,sentinel unknown,1.0
+2,corrected: invalid dates,invalid_date,transposed year,1.0
+2,corrected: invalid dates,invalid_date,year +1000,1.0
+2,"original: same price, different dates",duplicate,exact copy,0.056
+2,"original: same price, different dates",duplicate,one attribute blanked,0.02875
+2,"original: same price, different dates",duplicate,price re-keyed (<=0.5%),0.02425
+2,original: price manipulation,duplicate,exact copy,0.0635
+2,original: price manipulation,duplicate,one attribute blanked,0.0565
+2,original: price manipulation,duplicate,price re-keyed (<=0.5%),0.0
+2,corrected: listing duplicates,duplicate,exact copy,1.0
+2,corrected: listing duplicates,duplicate,one attribute blanked,1.0
+2,corrected: listing duplicates,duplicate,price re-keyed (<=0.5%),1.0
+2,corrected: robust z (|z| > 3.5),price_unit,x0.001,0.999
+2,corrected: robust z (|z| > 3.5),price_unit,x10,0.782
+2,corrected: robust z (|z| > 3.5),price_unit,x100,0.93
+2,corrected: robust z (|z| > 3.5),price_unit,x1000,0.977
+2,ML baseline: isolation forest,price_unit,x0.001,1.0
+2,ML baseline: isolation forest,price_unit,x10,0.884
+2,ML baseline: isolation forest,price_unit,x100,0.996
+2,ML baseline: isolation forest,price_unit,x1000,1.0
+2,ML baseline: isolation forest (price features),price_unit,x0.001,1.0
+2,ML baseline: isolation forest (price features),price_unit,x10,0.953
+2,ML baseline: isolation forest (price features),price_unit,x100,0.999
+2,ML baseline: isolation forest (price features),price_unit,x1000,1.0
+3,original: placeholder dates,invalid_date,sentinel 0000-00-00,1.0
+3,original: placeholder dates,invalid_date,sentinel 1900-01-01,1.0
+3,original: placeholder dates,invalid_date,sentinel 1970-01-01,0.0
+3,original: placeholder dates,invalid_date,sentinel 9999-12-31,0.0
+3,original: placeholder dates,invalid_date,sentinel N/A,1.0
+3,original: placeholder dates,invalid_date,sentinel unknown,1.0
+3,original: placeholder dates,invalid_date,transposed year,0.0
+3,original: placeholder dates,invalid_date,year +1000,0.0
+3,corrected: invalid dates,invalid_date,sentinel 0000-00-00,1.0
+3,corrected: invalid dates,invalid_date,sentinel 1900-01-01,1.0
+3,corrected: invalid dates,invalid_date,sentinel 1970-01-01,1.0
+3,corrected: invalid dates,invalid_date,sentinel 9999-12-31,1.0
+3,corrected: invalid dates,invalid_date,sentinel N/A,1.0
+3,corrected: invalid dates,invalid_date,sentinel unknown,1.0
+3,corrected: invalid dates,invalid_date,transposed year,1.0
+3,corrected: invalid dates,invalid_date,year +1000,1.0
+3,"original: same price, different dates",duplicate,exact copy,0.051
+3,"original: same price, different dates",duplicate,one attribute blanked,0.0275
+3,"original: same price, different dates",duplicate,price re-keyed (<=0.5%),0.02375
+3,original: price manipulation,duplicate,exact copy,0.057
+3,original: price manipulation,duplicate,one attribute blanked,0.058
+3,original: price manipulation,duplicate,price re-keyed (<=0.5%),0.0
+3,corrected: listing duplicates,duplicate,exact copy,1.0
+3,corrected: listing duplicates,duplicate,one attribute blanked,1.0
+3,corrected: listing duplicates,duplicate,price re-keyed (<=0.5%),1.0
+3,corrected: robust z (|z| > 3.5),price_unit,x0.001,0.995
+3,corrected: robust z (|z| > 3.5),price_unit,x10,0.805
+3,corrected: robust z (|z| > 3.5),price_unit,x100,0.948
+3,corrected: robust z (|z| > 3.5),price_unit,x1000,0.983
+3,ML baseline: isolation forest,price_unit,x0.001,1.0
+3,ML baseline: isolation forest,price_unit,x10,0.892
+3,ML baseline: isolation forest,price_unit,x100,0.994
+3,ML baseline: isolation forest,price_unit,x1000,0.999
+3,ML baseline: isolation forest (price features),price_unit,x0.001,1.0
+3,ML baseline: isolation forest (price features),price_unit,x10,0.948
+3,ML baseline: isolation forest (price features),price_unit,x100,1.0
+3,ML baseline: isolation forest (price features),price_unit,x1000,1.0
+4,original: placeholder dates,invalid_date,sentinel 0000-00-00,1.0
+4,original: placeholder dates,invalid_date,sentinel 1900-01-01,1.0
+4,original: placeholder dates,invalid_date,sentinel 1970-01-01,0.0
+4,original: placeholder dates,invalid_date,sentinel 9999-12-31,0.0
+4,original: placeholder dates,invalid_date,sentinel N/A,1.0
+4,original: placeholder dates,invalid_date,sentinel unknown,1.0
+4,original: placeholder dates,invalid_date,transposed year,0.0
+4,original: placeholder dates,invalid_date,year +1000,0.0
+4,corrected: invalid dates,invalid_date,sentinel 0000-00-00,1.0
+4,corrected: invalid dates,invalid_date,sentinel 1900-01-01,1.0
+4,corrected: invalid dates,invalid_date,sentinel 1970-01-01,1.0
+4,corrected: invalid dates,invalid_date,sentinel 9999-12-31,1.0
+4,corrected: invalid dates,invalid_date,sentinel N/A,1.0
+4,corrected: invalid dates,invalid_date,sentinel unknown,1.0
+4,corrected: invalid dates,invalid_date,transposed year,1.0
+4,corrected: invalid dates,invalid_date,year +1000,1.0
+4,"original: same price, different dates",duplicate,exact copy,0.051
+4,"original: same price, different dates",duplicate,one attribute blanked,0.0245
+4,"original: same price, different dates",duplicate,price re-keyed (<=0.5%),0.032
+4,original: price manipulation,duplicate,exact copy,0.056
+4,original: price manipulation,duplicate,one attribute blanked,0.05225
+4,original: price manipulation,duplicate,price re-keyed (<=0.5%),0.0
+4,corrected: listing duplicates,duplicate,exact copy,1.0
+4,corrected: listing duplicates,duplicate,one attribute blanked,1.0
+4,corrected: listing duplicates,duplicate,price re-keyed (<=0.5%),1.0
+4,corrected: robust z (|z| > 3.5),price_unit,x0.001,0.992
+4,corrected: robust z (|z| > 3.5),price_unit,x10,0.78
+4,corrected: robust z (|z| > 3.5),price_unit,x100,0.927
+4,corrected: robust z (|z| > 3.5),price_unit,x1000,0.984
+4,ML baseline: isolation forest,price_unit,x0.001,0.999
+4,ML baseline: isolation forest,price_unit,x10,0.843
+4,ML baseline: isolation forest,price_unit,x100,0.997
+4,ML baseline: isolation forest,price_unit,x1000,1.0
+4,ML baseline: isolation forest (price features),price_unit,x0.001,1.0
+4,ML baseline: isolation forest (price features),price_unit,x10,0.947
+4,ML baseline: isolation forest (price features),price_unit,x100,0.999
+4,ML baseline: isolation forest (price features),price_unit,x1000,1.0
