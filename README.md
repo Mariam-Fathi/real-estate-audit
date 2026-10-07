@@ -41,10 +41,30 @@ the original and corrected detectors, and scored them against the planted labels
 - Limitations are covered in the notebook. The main one: I designed both the planted errors and the detectors, so the
   date results in particular are close to guaranteed by construction.
 
+## Part 3: Duplicate leakage in price models ([notebook](notebooks/03_duplicate_leakage.ipynb))
+
+Does a random train/test split overstate a price model's accuracy because the same property appears in both train and
+test? The test set is held fixed, and training sets of identical size keep 0–100% of the "twins" (training records of
+a property that is also in the test set). Results cover 5 seeds and 2.2M listings.
+
+| Model | R² without twins | R² inflation from twins | On test rows with a twin |
+|---|---:|---:|---:|
+| Ridge | 0.561 | +0.0000 | R² +0.001 |
+| Gradient boosting | 0.724 | +0.0015 ± 0.0026 (n.s.) | R² +0.007 |
+| Random forest | 0.792 | **+0.0033 ± 0.0008** | R² **+0.041**, error −14% |
+
+- The inflation is real but **small** on this dataset. It is concentrated on the 12% of test rows with a twin, and it
+  grows linearly with the share of twins kept (p < 10⁻¹¹).
+- Twins usually share the price (80%) but almost never the features (4%), because status and previous-sale year
+  differ. So models can't look the answer up.
+- A plain random-vs-grouped comparison gives the same magnitude, but only the paired design attributes the gap to
+  duplicates.
+- Whether twins count as leakage depends on the use case: valuing new homes, or re-pricing homes already in the database.
+
 ## Roadmap
 1. ✅ Root-cause analysis of the original flags
 2. ✅ Detector validation: plant known errors and measure precision and recall across seeds
-3. Downstream impact: how duplicate leakage between train and test inflates a price model's score
+3. ✅ Downstream impact: how duplicate leakage between train and test inflates a price model's score
 4. A tested Python package with data contracts and CI
 5. Republish the Kaggle series
 
@@ -58,5 +78,9 @@ python -m pytest                              # unit tests for detectors, error 
 python experiments/run_validation.py 5        # about 6 minutes; writes results/validation_*.csv
 python notebooks/build_02.py
 python -m nbconvert --to notebook --execute --inplace notebooks/02_detector_validation.ipynb
+python experiments/run_leakage.py 5            # about 25 minutes; writes results/leakage_metrics.csv and leakage_records.parquet
+python experiments/run_naive_split.py 5        # about 10 minutes; writes results/leakage_naive.csv
+python notebooks/build_03.py
+python -m nbconvert --to notebook --execute --inplace notebooks/03_duplicate_leakage.ipynb
 ```
 The notebook asserts every number it reports, so a run that completes reproduces the results above.

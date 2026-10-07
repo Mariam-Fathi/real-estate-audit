@@ -1,0 +1,16 @@
+2,205,440 records, 2,038,692 properties, 14.0% of records share a property with another record
+seed 0: 65,002 twins in train, 11.6% of test rows have one
+  gradient boosting keep 0.00  R2 0.7243  [54s]
+  gradient boosting keep 1.00  R2 0.7236  [52s]
+seed 1: 64,655 twins in train, 11.5% of test rows have one
+  gradient boosting keep 0.00  R2 0.7227  [51s]
+  gradient boosting keep 1.00  R2 0.7255  [51s]
+seed 2: 64,955 twins in train, 11.6% of test rows have one
+  gradient boosting keep 0.00  R2 0.7224  [15s]
+  gradient boosting keep 1.00  R2 0.7264  [12s]
+seed 3: 64,706 twins in train, 11.5% of test rows have one
+  gradient boosting keep 0.00  R2 0.7249  [13s]
+  gradient boosting keep 1.00  R2 0.7270  [13s]
+seed 4: 64,697 twins in train, 11.4% of test rows have one
+  gradient boosting keep 0.00  R2 0.7234  [13s]
+  gradient boosting keep 1.00  R2 0.7226  [12s]
